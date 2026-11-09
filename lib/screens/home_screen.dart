@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import '../providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final provider = UserProvider.of(context);
+    final provider = context.watch<UserProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(
+              provider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+            ),
+            tooltip: provider.isDarkMode ? 'Light Mode' : 'Dark Mode',
+            onPressed: provider.toggleTheme,
+          ),
+        ],
       ),
+
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Center(
@@ -24,6 +35,16 @@ class HomeScreen extends StatelessWidget {
                     const Icon(Icons.home, size: 80, color: Colors.deepPurple),
 
                     const SizedBox(height: 24),
+
+                    Text(
+                      'Jumlah kunjungan: ${provider.visitCount} kali',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
 
                     Text(
                       provider.user.isLoggedIn
